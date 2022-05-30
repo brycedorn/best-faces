@@ -8,7 +8,7 @@
     "fetch:images": "node scripts/fetch-images",
     "sort:tweets": "node scripts/sort-tweets",
     "generate:imports": "node scripts/generate-face-imports",
-    "clean": "rm -rf data faces images",
+    "clean": "rm -rf data faces images public",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear"

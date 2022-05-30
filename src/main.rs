@@ -43,6 +43,7 @@ fn main() {
     let mut tweet_data = String::new();
     tweets.read_to_string(&mut tweet_data).unwrap();
     let json = Json::from_str(&tweet_data).unwrap();
+    let num_tweets = json.as_array().unwrap().len();
     let mut index = 0;
 
     let file_type_regexp = Regex::new(".*\\.(png|jpg|gif|bmp)").unwrap();
@@ -58,7 +59,7 @@ fn main() {
     }
 
     loop {
-        if index == json.as_array().unwrap().len() {
+        if index == num_tweets {
             break;
         }
 
@@ -111,9 +112,9 @@ fn main() {
         for (index, face) in faces.iter().enumerate() {
             let bbox = face.bbox();
 
-            match cmp::min(bbox.x(), bbox.y()) {
-                -1 => {
-                    println!("Out of bounds for face: {}", index);
+            match cmp::min(bbox.x(), bbox.y()).is_negative() {
+                true => {
+                    println!("Out of bounds for face: {}. x: {}, y: {}", index, bbox.x(), bbox.y());
                 }
                 _ => {
                     let cropped = image.crop(
@@ -134,6 +135,8 @@ fn main() {
                 }
             }
         }
+
+        println!("{} of {} complete", index, num_tweets);
 
         index += 1;
     }
