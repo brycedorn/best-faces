@@ -1,0 +1,99 @@
+name: Get best faces
+
+on: [push]
+
+jobs:
+
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install node modules
+        run: npm install
+      
+      - name: Fetch tweets
+        env:
+          USER_ID: ${{ secrets.USER_ID }}
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+        run: npm run fetch:tweets
+
+      - name: Sort tweets
+        run: npm run sort:tweets
+      
+      - name: Fetch images
+        run: npm run fetch:images
+
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: data
+      #     path: data/*
+
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: images
+      #     path: images/*
+
+  # faces:
+  #   needs: fetch
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: data
+      #     path: data/*
+
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: images
+      #     path: images/*
+
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: run
+
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: faces
+      #     path: faces/*
+
+  # site:
+  #   needs: faces
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: data
+  #         path: data/*
+
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: faces
+  #         path: faces/*
+
+  #     - name: Install node modules
+  #       run: npm install
+
+      - name: Generate imports
+        run: npm run generate:imports
+
+      - name: Build site
+        run: npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: public # The folder the action should deploy.
+          CLEAN: true # Automatically remove deleted files from the deploy branch
