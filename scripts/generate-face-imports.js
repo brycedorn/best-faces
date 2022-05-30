@@ -15,8 +15,8 @@ function noFileName(string) {
 }
 
 const generateImports = async () => {
-    fs.truncate(outputFileName, 0, () => {
-        console.log('Cleared file.');
+    await fs.writeFile(outputFileName, '', () => {
+        console.log('Generated face-imports.js.');
     });
 
     tweets.forEach(async tweet => {

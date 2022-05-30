@@ -12,9 +12,9 @@ const rankTweets = async () => {
         return b.tweet.public_metrics.like_count - a.tweet.public_metrics.like_count;
     });
 
-    await fs.writeFile(fileName, JSON.stringify(sortedTweets), (errror) => {
-        if (errror) {
-            console.error(errror);
+    await fs.writeFile(fileName, JSON.stringify(sortedTweets), (error) => {
+        if (error) {
+            console.error(error);
         }
     });
 
