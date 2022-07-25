@@ -1,9 +1,8 @@
 name: Get best faces
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
-
   fetch:
     runs-on: ubuntu-latest
     steps:
